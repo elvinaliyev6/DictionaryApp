@@ -1,6 +1,7 @@
 package az.orient.course.util;
 
 import az.orient.course.main.Main;
+import az.orient.course.method.Method;
 
 import java.util.Scanner;
 

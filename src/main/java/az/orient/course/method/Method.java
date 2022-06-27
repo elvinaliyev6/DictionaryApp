@@ -1,12 +1,12 @@
-package az.orient.course.util;
+package az.orient.course.method;
+
+import az.orient.course.util.AdminUtil;
+import az.orient.course.util.FileUtility;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Method {
 
@@ -47,11 +47,8 @@ public class Method {
         System.out.println("Success!!!");
     }
 
-    public static void addNewWord() throws Exception {
-        System.out.println("Which dictionary do you want to write the word in?");
+    public static void addNewWord(String filePath) throws Exception {
         Scanner sc = new Scanner(System.in);
-        String dictName = sc.next();
-
         System.out.println("Enter first word: ");
         String firstWord = sc.next();
 
@@ -60,7 +57,6 @@ public class Method {
 
         String text = firstWord + "-" + secondWord;
 
-        String filePath = FileUtility.FOLDER_PATH.concat("/").concat(dictName + ".txt");
         FileUtility.appendIntoFile(filePath, text);
         System.out.println("Success!!!");
 
@@ -88,20 +84,8 @@ public class Method {
         System.out.println("Success!!!");
     }
 
-    public static void deleteWord() throws Exception {
-        System.out.println("Which dictionary do you want to delete the word in?");
-        Scanner sc = new Scanner(System.in);
-        String dictName = sc.next();
+    public static void deleteWord(String word, String filePath) throws Exception {
 
-        System.out.println("Enter first word: ");
-        String firstWord = sc.next();
-
-        System.out.println("Enter second word: ");
-        String secondWord = sc.next();
-
-        String word = firstWord + "-" + secondWord;
-
-        String filePath = FileUtility.FOLDER_PATH.concat("/").concat(dictName + ".txt");
         List<String> words = FileUtility.readFile(filePath);
 
         for (int i = 0; i < words.toArray().length; i++) {
@@ -109,7 +93,6 @@ public class Method {
 
             FileUtility.writeIntoFile(filePath, words.get(i));
         }
-        System.out.println("Success!!!");
     }
 
     public static String translate(String word, String filePath) throws Exception {
@@ -126,10 +109,63 @@ public class Method {
 
         if (map.containsKey(word)) {
             res = map.get(word);
-        }else{
-            res="Not Found!";
+        } else {
+            res = "Not Found!";
         }
         map.clear();
         return res;
+    }
+
+    public static void update(String word, String newWord, String filePath) throws Exception {
+
+        List<String> words = FileUtility.readFile(filePath);
+
+        Map<String, String> dictMap = new HashMap<>();
+
+        for (String s : words) {
+            String[] arr = s.split("-");
+            dictMap.put(arr[0], arr[1]);
+        }
+
+        Collection<String> values = dictMap.values();
+        List<String> valuesList = new ArrayList<>();
+        valuesList.addAll(values);
+
+        Set<String> keys = dictMap.keySet();
+        List<String> keysList =new ArrayList<>();
+        keysList.addAll(keys);
+
+        if (values.contains(word)) {
+            valuesList.set(valuesList.indexOf(word), newWord);
+        }
+
+        if (keys.contains(word)) {
+            keysList.set(keysList.indexOf(word), newWord);
+        }
+
+        PrintWriter writer = new PrintWriter(filePath);
+        writer.close();
+
+        for (int i = 0; i < words.toArray().length; i++) {
+            String text = keysList.get(i) + "-" + valuesList.get(i);
+            FileUtility.appendIntoFile(filePath, text);
+        }
+    }
+
+    public static String findDictFilePath() throws Exception {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Which dictionary do you want to change?");
+        String dictName = sc.next();
+
+
+        List<String> list = FileUtility.readFile(FileUtility.DICTIONARIES_FILE_PATH);
+
+        for (String s : list) {
+            if (s.equalsIgnoreCase(dictName)) {
+                String filePath = FileUtility.FOLDER_PATH.concat("/").concat(dictName + ".txt");
+                return filePath;
+            }
+        }
+        throw new FileNotFoundException("Not Found");
     }
 }
