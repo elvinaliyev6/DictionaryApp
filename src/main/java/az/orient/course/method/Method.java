@@ -31,14 +31,20 @@ public class Method {
         String dictName = sc.nextLine();
         String filePath = FileUtility.FOLDER_PATH + "/" + dictName + ".txt";
 
-        List<String> dictList = FileUtility.readFile(FileUtility.DICTIONARIES_FILE_PATH);
+        try {
+            List<String> dictList = FileUtility.readFile(FileUtility.DICTIONARIES_FILE_PATH);
 
-        for (String dict : dictList) {
-            if (dict.equalsIgnoreCase(dictName)) {
-                System.out.println(dictName + " is already exist");
-                AdminUtil.process();
+            for (String dict : dictList) {
+                if (dict.equalsIgnoreCase(dictName)) {
+                    System.out.println(dictName + " is already exist");
+                    AdminUtil.process();
+                }
             }
+        } catch (FileNotFoundException ex) {
+            PrintWriter writer = new PrintWriter(filePath, "UTF-8");
+            writer.close();
         }
+
 
         PrintWriter writer = new PrintWriter(filePath, "UTF-8");
         writer.close();
@@ -132,7 +138,7 @@ public class Method {
         valuesList.addAll(values);
 
         Set<String> keys = dictMap.keySet();
-        List<String> keysList =new ArrayList<>();
+        List<String> keysList = new ArrayList<>();
         keysList.addAll(keys);
 
         if (values.contains(word)) {

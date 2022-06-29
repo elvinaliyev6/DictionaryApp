@@ -9,10 +9,7 @@ public class UserUtil {
     public static void process() throws Exception {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("1. See all current dictionaries in system:\n" +
-                "2. Search word: \n" +
-                "3. Return login menu: \n" +
-                "4. Exit");
+        System.out.println("1. See all current dictionaries in system:\n" + "2. Search word: \n" + "3. Return login menu: \n" + "4. Exit");
 
         switch (sc.nextInt()) {
             case 1:
